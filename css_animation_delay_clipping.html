@@ -1,0 +1,117 @@
+<html>
+	<head>
+		<style>
+			body {
+				background-color: #000000;
+				color: #FFFFFF;
+			}
+			#control {
+				visibility: hidden;
+			}
+			#count-controls {
+				width: 50%;
+			}
+			#container {
+				height: 100%;
+			}
+			.control {
+				margin: 30px 20px 10px;
+			    width: 180px;
+			    height: 220px;
+			    position: absolute;
+			}
+			.image {
+				width: 175px;
+				height: 175px;
+			}
+			.text {
+				padding-left: 10px;
+			}
+		</style>
+		<script>
+			function generateControls() {
+				var screenWidth = window.innerWidth,
+					screenHeight = window.innerHeight,
+					controlsPerRow,
+					container,
+					count,
+					control,
+					controlTemplate,
+					controlCount,
+					image,
+					status,
+					idx;
+
+			    container = document.getElementById('container');
+			    controlCount = container.childNodes.length;
+			    count = document.getElementById('count-controls').value;
+			    status = document.getElementById('status');
+
+			    if (count > controlCount) {
+			    	controlTemplate = document.getElementById('control');
+			    	controlsPerRow = Math.floor(screenWidth / controlTemplate.offsetWidth);
+			    	for (idx=controlCount; idx<count; idx++) {
+			    		control = controlTemplate.cloneNode(true);
+			    		image = control.getElementsByClassName('image')[0];
+					    image.src = 'http://placehold.it/300x300/' + Math.floor(Math.random()*0x1000000).toString(16) + '/ffffff&text=Image ' + (idx+1);
+					    //image.src = 'http://lorempixel.com/300/300/sports/Image%20'+(idx+1);
+					    control.id = 'control' + idx;
+					    control.style['top'] = Math.floor(idx/controlsPerRow)*(controlTemplate.clientHeight) + 20 + 'px';
+					    control.style['left'] = idx%controlsPerRow*controlTemplate.clientWidth + 'px';
+					    container.appendChild(control);
+			    	}
+			    } else if (count < controlCount) {
+			    	for (idx=controlCount-1; idx>=count; idx--) {
+			    		container.removeChild(container.childNodes[idx]);
+			    	}
+			    }
+
+				status.innerHTML = count + ' control' + (count!=1 ? 's' : '');
+				controlCount = count;
+			}
+
+			function incrementControls() {
+				var control = document.getElementById('count-controls');
+				control.value = document.getElementById('container').childNodes.length + 1;
+				control.onmouseup();
+			}
+
+			function decrementControls() {
+				var control = document.getElementById('count-controls');
+				control.value = document.getElementById('container').childNodes.length - 1;
+				control.onmouseup();
+			}
+
+			function enter(inControl) {
+				var image = inControl.getElementsByClassName('image')[0];
+				var text = inControl.getElementsByClassName('text')[0];
+				inControl.style.clip = 'rect(0, 175px, 200px, 10px)';
+				image.style.webkitTransitionDuration = '30s';
+				image.style.webkitTransform = 'translateZ(0) translateX(-175px)';
+				text.innerHTML = 'I am moving now';
+			}
+
+			function leave(inControl) {
+				var image = inControl.getElementsByClassName('image')[0];
+				var text = inControl.getElementsByClassName('text')[0];
+				inControl.style.clip = '';
+				image.style.webkitTransitionDuration = '0s';
+				image.style.webkitTransform = '';
+				text.innerHTML = '';
+			}
+		</script>
+	</head>
+	<body onload="generateControls();">
+		<div class="controls">
+			<button onclick="decrementControls();">-</button>
+		    <input type="range" id="count-controls" min=0 max=1000 value=100 onmouseup="generateControls();" />
+		    <button onclick="incrementControls();">+</button>
+		    <span id="status"></span>
+		</div>
+		<div id="container"></div>
+		<div id="control" class="control" onmouseenter="enter(this);" onmouseleave="leave(this);">
+			<img class="image" />
+			<div class="text" />
+		</div>
+	</body>
+</html>
