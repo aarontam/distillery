@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<style>
+			.outer {
+			    direction: rtl;
+			    width: 370px;
+			    padding: 10px;
+			    background-color: #CC99FF;
+			}
+			.inner {
+			    text-overflow: ellipsis;
+			    overflow: hidden;
+			    white-space: nowrap;
+			    background-color: #99CCFF;
+			}
+			.section {
+			    margin: 10px 0;
+			}
+			.metrics {
+			    margin: 10px 0;
+			    padding: 10px;
+			    background-color: #EEE;
+			    display: inline-block;
+			}
+		</style>
+		<script>
+			function showMetrics() {
+			    var results = [],
+			        element = document.getElementById("content");
+			    results.push("scrollWidth: " + element.scrollWidth);
+			    results.push("clientWidth: " + element.clientWidth);
+			    results.push("paddingLeft: " + window.getComputedStyle(element, null).getPropertyValue('padding-left'));
+			    document.getElementById("metrics").innerHTML = results.join("<br />");
+			}
+
+			function updatePadding() {
+			    var padding = document.getElementById("inputPadding").value;
+			    document.getElementById("content").style.paddingLeft = padding + "px";
+			    showMetrics();
+			}
+		</script>
+	</head>
+	<body onload="updatePadding();">
+		<div class="outer">
+	        <div id="content" class="inner">This is text that will be truncated with a little padding</div>
+	    </div>
+	    
+	    <div class="section">
+	        <label for="inputPadding">paddingLeft:</label>
+	        <input id="inputPadding" type="number" step="1" value="40" min="0" onchange="updatePadding();" />
+	    </div>
+	    
+	    <div id="metrics" class="metrics"></div>
+	    
+	    <div class="section">Notice how increasing the paddingLeft value does not always result in scrollWidth increasing.</div>
+	</body>
+</html>

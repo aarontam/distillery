@@ -1,0 +1,69 @@
+<html>
+	<head>
+		<style>
+			label {
+			    display: inline-block;
+			    margin-right: 10px;
+			}
+			label span {
+			    display: inline-block;
+			    width: 100px;
+			    font-size: 14px;
+			    text-align: right;
+			}
+			input {
+			    display: inline-block;
+			    margin-left: 10px;
+			    width: 125px;
+			}
+			.result {
+			    display: inline-block;
+			    margin-left: 10px;
+			    font-size: 14px;
+			}
+			.case {
+			    margin: 10px 0;
+			}
+		</style>
+		<script>
+			function getDate(inControl) {
+			    var dateValue = inControl.parentNode.children[0].children[1].value;
+			    inControl.parentNode.children[2].innerHTML = new Date(dateValue);
+			}
+		</script>
+	</head>
+	<body>
+		<div class="case">
+		    <label>
+		        <span>Issue Case 1</span>
+		        <input type="text" value="Mar 30 2014 01:00:00" />
+		    </label>
+		    <button onclick="getDate(this);">Get JS Date</button>
+		    <div class="result"></div>
+		</div>
+		<div class="case">
+		    <label>
+		        <span>Issue Case 2</span>
+		        <input type="text" value="Mar 30 2014 02:59:59" />
+		    </label>
+		    <button onclick="getDate(this);">Get JS Date</button>
+		    <div class="result"></div>
+		</div>
+		<div class="case">
+		    <label>
+		        <span>Normal Case 1</span>
+		        <input type="text" value="Mar 30 2014 00:59:59" />
+		    </label>
+		    <button onclick="getDate(this);">Get JS Date</button>
+		    <div class="result"></div>
+		</div>
+		<div class="case">
+		    <label>
+		        <span>Normal Case 2</span>
+		        <input type="text" value="Mar 30 2014 03:00:00" />
+		    </label>
+		    <button onclick="getDate(this);">Get JS Date</button>
+		    <div class="result"></div>
+		</div>
+	</body>
+</html>

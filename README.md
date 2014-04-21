@@ -5,6 +5,6 @@ A collection of tests and reproduction cases distilled to raw HTML/CSS/JS to dem
 
 Currently, the tests involve:
 - Performance issues related to CSS animations
-- Daylight savings time (DST) errors with certain timezones
-- Truncation of the display of an ellipsis when using text-overflow styling
+- Daylight savings time (DST) errors with certain timezones (Germany, Austria)
+- Truncation of the display of an ellipsis when using text-overflow styling for non-Latin text
 - Incorrect measurement of scrolling dimensions for clipped elements
