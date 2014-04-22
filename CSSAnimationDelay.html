@@ -4,6 +4,7 @@
 			body {
 				background-color: #000000;
 				color: #FFFFFF;
+				margin: 0;
 			}
 			#control {
 				visibility: hidden;
@@ -14,11 +15,18 @@
 			#container {
 				height: 100%;
 			}
+			.controls {
+				margin: 10px;
+			}
 			.control {
 				margin: 30px 20px 10px;
 			    width: 180px;
 			    height: 200px;
 			    position: absolute;
+			}
+			.standard-positioning > * {
+				position: static;
+				display: inline-block;
 			}
 			.image {
 				width: 175px;
@@ -58,14 +66,14 @@
 
 			    if (count > controlCount) {
 			    	controlTemplate = document.getElementById('control');
-			    	controlsPerRow = Math.floor(screenWidth / controlTemplate.offsetWidth);
+			    	controlsPerRow = Math.floor(screenWidth / (controlTemplate.offsetWidth+40));
 			    	for (idx=controlCount; idx<count; idx++) {
 			    		control = controlTemplate.cloneNode(true);
 					    image = control.getElementsByClassName('image')[0];
 					    image.src = 'http://placehold.it/300x300/' + Math.floor(Math.random()*0x1000000).toString(16) + '/ffffff&text=Image ' + (idx+1);
 					    control.id = 'control' + idx;
-					    control.style['top'] = Math.floor(idx/controlsPerRow)*(controlTemplate.clientHeight) + 20 + 'px';
-					    control.style['left'] = idx%controlsPerRow*controlTemplate.clientWidth + 'px';
+					    control.style['top'] = Math.floor(idx/controlsPerRow)*(controlTemplate.clientHeight+40) + 50 + 'px';
+					    control.style['left'] = idx%controlsPerRow*(controlTemplate.clientWidth+40) + 'px';
 					    container.appendChild(control);
 			    	}
 			    } else if (count < controlCount) {
@@ -90,6 +98,14 @@
 				control.onmouseup();
 			}
 
+			function changePositioning(inControl) {
+				if (inControl.checked) {
+					document.getElementById('container').className = '';
+				} else {
+					document.getElementById('container').className = 'standard-positioning';
+				}
+			}
+
 			function enter(inControl) {
 				if (typeof currentJob !== 'undefined') clearTimeout(currentJob);
 				var text = inControl.getElementsByClassName('text')[0];
@@ -111,16 +127,20 @@
 	</head>
 	<body onload="generateControls();">
 		<div class="controls">
+		    <span id="status"></span>
 			<button onclick="decrementControls();">-</button>
 		    <input type="range" id="count-controls" min=0 max=1000 value=100 onmouseup="generateControls();" />
 		    <button onclick="incrementControls();">+</button>
-		    <span id="status"></span>
+		    <label>
+			    <input type="checkbox" checked="checked" onchange="changePositioning(this);" />
+		    	Absolute Positioning
+			</label>
 		</div>
 		<div id="container"></div>
 		<div id="control" class="control" onmouseenter="enter(this);" onmouseleave="leave(this);">
 		    <img class="image" />
 	        <div class="text-wrapper">
-	            <div class="text">This is a relatively long string that will be animated using a CSS transform, specifically translateX. When we place a number of sibling elements on the screen that are absolutely positioned, the number of elements that have to be repainted is very high, and somewhat proportional to the number of sibling elements that are absolutely positioned on screen. This can be solved by placing each of these controls into their own hardware-accelerated layer, but we need to figure out what the right balance between GPU offloading and CPU load when determining when and where to apply translateZ(0).</div>
+	            <div class="text">This is a relatively long string that will be animated using a CSS transform, specifically translateX. When we place a number of sibling elements on the screen that are absolutely positioned, the number of elements that have to be repainted is very high, and equal to the number of sibling elements that follow the container of the element that has the CSS transform applied, causing the response time to be very slow; mousing off the element should immediately stop the animation, but you can see that it continues to play for a number of frames. This can be solved by placing each of these elements into their own hardware-accelerated layer, but we need to figure out what the right balance between GPU offloading and CPU load when determining when and where to apply translateZ(0). Alternatively, removing the absolute positioning also seems to make this performant once again.</div>
 	        </div>
 		</div>
 	</body>
