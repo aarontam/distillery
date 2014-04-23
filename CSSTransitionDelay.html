@@ -1,0 +1,148 @@
+<html>
+	<head>
+		<style>
+			body {
+				background-color: #000000;
+				color: #FFFFFF;
+				margin: 0;
+			}
+			#control {
+				visibility: hidden;
+			}
+			#count-controls {
+				width: 50%;
+			}
+			#container {
+				height: 100%;
+				position: relative;
+				overflow: hidden;
+				-webkit-transition:height 1s;
+			}
+			#container.shrunken {
+				height: 0;
+			}
+			.controls {
+				margin: 10px;
+			}
+			.standard-positioning > * {
+				position: static;
+				display: inline-block;
+			}
+			.image {
+				width: 175px;
+				height: 175px;
+				margin-right: 10px;
+				float: left;
+				display: inline-block;
+			}
+			.text {
+				display: -webkit-inline-box;
+			    -webkit-line-clamp: 2;
+			    -webkit-box-orient: vertical;
+			    overflow: hidden;
+			    color: #FFFFFF;
+			    -webkit-transition-property: webkit-transform;
+			    transition-timing-function: linear;
+			    -webkit-transition-timing-function: linear;
+			}
+			.container-details {
+				height: 250px;
+				position: relative;
+			}
+			.name {
+				padding: 10px;
+				font-size: 48px;
+			}
+			.description {
+				overflow: hidden;
+				margin: 20px;
+			}
+		</style>
+		<script>
+			function generateControls() {
+				var screenWidth = window.innerWidth,
+					screenHeight = window.innerHeight,
+					controlsPerRow,
+					container,
+					count,
+					control,
+					controlTemplate,
+					controlCount,
+					image,
+					status,
+					idx;
+
+			    container = document.getElementById('container');
+			    controlCount = container.childNodes.length;
+			    count = document.getElementById('count-controls').value;
+			    status = document.getElementById('status');
+
+			    if (count > controlCount) {
+			    	controlTemplate = document.getElementById('control');
+			    	controlsPerRow = Math.floor(screenWidth / (controlTemplate.offsetWidth+40));
+			    	for (idx=controlCount; idx<count; idx++) {
+			    		control = controlTemplate.cloneNode(true);
+					    image = control.getElementsByClassName('image')[0];
+					    image.src = 'http://placehold.it/300x300/' + Math.floor(Math.random()*0x1000000).toString(16) + '/ffffff&text=Image ' + (idx+1);
+					    control.id = 'control' + idx;
+					    control.style['top'] = Math.floor(idx/controlsPerRow)*(controlTemplate.clientHeight+40) + 50 + 'px';
+					    control.style['left'] = idx%controlsPerRow*(controlTemplate.clientWidth+40) + 'px';
+					    container.appendChild(control);
+			    	}
+			    } else if (count < controlCount) {
+			    	for (idx=controlCount-1; idx>=count; idx--) {
+			    		container.removeChild(container.childNodes[idx]);
+			    	}
+			    }
+
+				status.innerHTML = count + ' control' + (count!=1 ? 's' : '');
+				controlCount = count;
+			}
+
+			function incrementControls() {
+				var control = document.getElementById('count-controls');
+				control.value = document.getElementById('container').childNodes.length + 1;
+				control.onmouseup();
+			}
+
+			function decrementControls() {
+				var control = document.getElementById('count-controls');
+				control.value = document.getElementById('container').childNodes.length - 1;
+				control.onmouseup();
+			}
+
+			function shrink() {
+				var container = document.getElementById('container');
+				container.className = 'shrunken';
+			}
+
+			function grow() {
+				var container = document.getElementById('container');
+				container.className = '';
+			}
+		</script>
+	</head>
+	<body onload="generateControls();">
+		<div class="controls">
+		    <span id="status"></span>
+			<button onclick="decrementControls();">-</button>
+		    <input type="range" id="count-controls" min=0 max=1000 value=100 onmouseup="generateControls();" />
+		    <button onclick="incrementControls();">+</button>
+			<button onclick="grow();">Reset</button>
+		</div>
+		<div id="container"></div>
+		<div id="control" class="control" onclick="shrink();">
+			<div>
+			    <img class="image" />
+			    <div class="container-details">
+				    <div class="name">Item name</div>
+				    <div class="description">
+			            <div class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras molestie accumsan velit at adipiscing. Nunc id urna vitae ante tincidunt blandit. Phasellus laoreet sagittis nunc, a porttitor eros molestie et. Proin in erat magna. Quisque pharetra ante non blandit eleifend. Etiam eu mollis massa. Aenean lacus odio, ultrices sed mauris pretium, sagittis ornare leo. Curabitur id tortor elementum, condimentum elit vel, cursus nisl. Donec nec mauris nec magna tristique mattis a malesuada leo. Fusce in sagittis ipsum. Etiam vel velit felis. Ut sodales dictum elit, ut vehicula odio venenatis et. Aliquam id elit volutpat, tincidunt neque at, sagittis sem.</div>
+				    </div>
+				    <button onclick="shrink();">Action!</button>
+			    </div>
+			</div>
+	        
+		</div>
+	</body>
+</html>
