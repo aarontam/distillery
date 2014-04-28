@@ -15,6 +15,9 @@
 			#container {
 				height: 100%;
 			}
+			#results {
+				margin: 0 10px;
+			}
 			.controls {
 				margin: 10px;
 			}
@@ -46,6 +49,8 @@
 			}
 		</style>
 		<script>
+			var timeoutId;
+
 			function generateControls() {
 				var screenWidth = window.innerWidth,
 					screenHeight = window.innerHeight,
@@ -117,11 +122,23 @@
 			}
 
 			function leave(inControl) {
+				var results = document.getElementById('results');
 				var text = inControl.getElementsByClassName('text')[0];
+				var timeStart = performance.now();
+
+				if (timeoutId) {
+					clearTimeout(timeoutId);
+				}
+
+				results.innerHTML = 'Calculating Time...';
+
 				text.style.webkitTransitionDuration = '0s';
 				text.style.overflow = 'hidden';
 				text.style.textOverflow = 'ellipsis';
 				text.style.webkitTransform = '';
+				timeoutId = window.setTimeout(function() {
+					results.innerHTML = 'Elapsed Time: ' + (performance.now() - timeStart) + 'ms';
+				}, 0);
 			}
 		</script>
 	</head>
@@ -136,6 +153,7 @@
 		    	Absolute Positioning
 			</label>
 		</div>
+		<div id="results">Results</div>
 		<div id="container"></div>
 		<div id="control" class="control" onmouseenter="enter(this);" onmouseleave="leave(this);">
 		    <img class="image" />
