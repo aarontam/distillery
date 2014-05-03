@@ -15,7 +15,7 @@
 			#container {
 				height: 100%;
 			}
-			#results {
+			.result {
 				margin: 0 10px;
 			}
 			.controls {
@@ -49,7 +49,8 @@
 			}
 		</style>
 		<script>
-			var timeoutId;
+			var timeoutEnterId,
+				timeoutLeaveId;
 
 			function generateControls() {
 				var screenWidth = window.innerWidth,
@@ -75,9 +76,9 @@
 			    	for (idx=controlCount; idx<count; idx++) {
 			    		control = controlTemplate.cloneNode(true);
 					    image = control.getElementsByClassName('image')[0];
-					    image.src = 'http://placehold.it/300x300/' + Math.floor(Math.random()*0x1000000).toString(16) + '/ffffff&text=Image ' + (idx+1);
+					    image.src = 'http://placehold.it/300x300/' + Math.floor(Math.random()*0x1000000).toString(16) + '/ffffff&text=Image ' +idx;
 					    control.id = 'control' + idx;
-					    control.style['top'] = Math.floor(idx/controlsPerRow)*(controlTemplate.clientHeight+40) + 50 + 'px';
+					    control.style['top'] = Math.floor(idx/controlsPerRow)*(controlTemplate.clientHeight+40) + 75 + 'px';
 					    control.style['left'] = idx%controlsPerRow*(controlTemplate.clientWidth+40) + 'px';
 					    container.appendChild(control);
 			    	}
@@ -112,32 +113,42 @@
 			}
 
 			function enter(inControl) {
-				if (typeof currentJob !== 'undefined') clearTimeout(currentJob);
-				var text = inControl.getElementsByClassName('text')[0];
+				if (timeoutEnterId) {
+					clearTimeout(timeoutEnterId);
+				}
+
+				var result = document.getElementById('result-enter'),
+					text = inControl.getElementsByClassName('text')[0],
+					timeStart = performance.now();
+
+				result.innerHTML = 'Calculating Time...';
 				text.style.transitionDuration = '100s';
 			    text.style.webkitTransitionDuration = '100s';
 			    text.style.overflow = 'visible';
 			    text.style.textOverflow = 'clip';
 			    text.style.webkitTransform = 'translateZ(0) translateX(-' + text.scrollWidth + 'px)';
+			    timeoutEnterId = window.setTimeout(function() {
+			    	result.innerHTML = 'Elapsed Time for Enter (' + inControl.getAttribute('id') + '): ' + (performance.now() - timeStart) + 'ms';
+			    }, 0);
 			}
 
 			function leave(inControl) {
-				var results = document.getElementById('results');
-				var text = inControl.getElementsByClassName('text')[0];
-				var timeStart = performance.now();
+				var result = document.getElementById('result-leave'),
+					text = inControl.getElementsByClassName('text')[0],
+					timeStart = performance.now();
 
-				if (timeoutId) {
-					clearTimeout(timeoutId);
+				if (timeoutLeaveId) {
+					clearTimeout(timeoutLeaveId);
 				}
 
-				results.innerHTML = 'Calculating Time...';
+				result.innerHTML = 'Calculating Time...';
 
 				text.style.webkitTransitionDuration = '0s';
 				text.style.overflow = 'hidden';
 				text.style.textOverflow = 'ellipsis';
 				text.style.webkitTransform = '';
-				timeoutId = window.setTimeout(function() {
-					results.innerHTML = 'Elapsed Time: ' + (performance.now() - timeStart) + 'ms';
+				timeoutLeaveId = window.setTimeout(function() {
+					result.innerHTML = 'Elapsed Time for Leave (' + inControl.getAttribute('id') + '): ' + (performance.now() - timeStart) + 'ms';
 				}, 0);
 			}
 		</script>
@@ -153,7 +164,8 @@
 		    	Absolute Positioning
 			</label>
 		</div>
-		<div id="results">Results</div>
+		<div id="result-enter" class="result">Enter Timing</div>
+		<div id="result-leave" class="result">Leave Timing</div>
 		<div id="container"></div>
 		<div id="control" class="control" onmouseenter="enter(this);" onmouseleave="leave(this);">
 		    <img class="image" />
