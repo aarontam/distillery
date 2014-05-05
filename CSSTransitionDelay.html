@@ -112,13 +112,29 @@
 			}
 
 			function shrink() {
-				var container = document.getElementById('container');
+				var result = document.getElementById('result'),
+					container = document.getElementById('container'),
+					timeStart = performance.now();
+
+				result.innerHTML = 'Calculating Time...';
 				container.className = 'shrunken';
+
+				setTimeout(function() {
+					result.innerHTML = 'Elapsed Time for Shrink: ' + (performance.now() - timeStart) + 'ms';
+				}, 0);
 			}
 
 			function grow() {
-				var container = document.getElementById('container');
+				var result = document.getElementById('result'),
+					container = document.getElementById('container'),
+					timeStart = performance.now();
+
+				result.innerHTML = 'Calculating Time...';
 				container.className = '';
+
+				setTimeout(function() {
+					result.innerHTML = 'Elapsed Time for Grow: ' + (performance.now() - timeStart) + 'ms';
+				}, 0);
 			}
 		</script>
 	</head>
@@ -130,6 +146,7 @@
 		    <button onclick="incrementControls();">+</button>
 			<button onclick="grow();">Reset</button>
 		</div>
+		<div id="result" class="result">Transition Start Timing</div>
 		<div id="container"></div>
 		<div id="control" class="control" onclick="shrink();">
 			<div>

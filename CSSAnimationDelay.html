@@ -113,15 +113,16 @@
 			}
 
 			function enter(inControl) {
-				if (timeoutEnterId) {
-					clearTimeout(timeoutEnterId);
-				}
-
 				var result = document.getElementById('result-enter'),
 					text = inControl.getElementsByClassName('text')[0],
 					timeStart = performance.now();
 
+				if (timeoutEnterId) {
+					clearTimeout(timeoutEnterId);
+				}
+
 				result.innerHTML = 'Calculating Time...';
+				
 				text.style.transitionDuration = '100s';
 			    text.style.webkitTransitionDuration = '100s';
 			    text.style.overflow = 'visible';
