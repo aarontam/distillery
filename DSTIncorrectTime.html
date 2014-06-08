@@ -30,9 +30,13 @@
 			    var dateValue = inControl.parentNode.children[0].children[1].value;
 			    inControl.parentNode.children[2].innerHTML = new Date(dateValue);
 			}
+			function init() {
+				document.getElementById('locale').innerHTML = navigator.language || navigator.userLanguage;
+			}
 		</script>
 	</head>
-	<body>
+	<body onload="init();">
+		<div>Current Locale: <span id="locale"></span> (issue originally occurred for German timezones)</div>
 		<div class="case">
 		    <label>
 		        <span>Issue Case 1</span>
